@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #parent{
+            display:flex;
+            flex-wrap:wrap;
+            flex-direction: column;
+            gap:10px;
+            justify-content: center;
+            align-items: center;
+            border:2px solid red;
+            width:350px;
+            border-radius:10px;
+            padding:10px;
+        }
+        #pokimon-details{
+            display: flex;
+            flex-direction: column;
+            gap:5px;
+            /* justify-content: center; */
+            align-items: center;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="parent">
+        <h2> single Pokimon Description</h2>
+        <div id="pokimon-details"></div>
+        <button id="back">Back</button>
+    </div>
+    <script>
+        const getPokimonUrlFormName =  () => {
+            let URLParams = new URLSearchParams(window.location.search)
+            return URLParams.get('name')
+        }
+
+        const API = async  (name) => {
+            let res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+            if(!res.ok){
+                document.getElementById('pokimon-details').innerHTML = `single pokimon failed to load`
+                return;
+            }
+            let data = await res.json()
+            DisplayDetails(data)
+        }
+
+        const DisplayDetails = async (data) => {
+            let newDiv = document.getElementById('pokimon-details')
+            newDiv.innerHTML = `
+                  <h2> ${data.name} </h2>
+                  <img src=" ${data.sprites.other.dream_world.front_default} " width="200px"/>
+                  <h4> ${data.weight} </h4>
+            `
+        }
+
+        const getName = getPokimonUrlFormName()
+
+        if(getName){
+            API(getName)
+        }else{
+            document.getElementById('pokimon-details').innerHTML = `single pokimon failed to load`
+        }
+        document.getElementById('back').addEventListener('click',() => {
+            window.location.href = 'index.html'
+        })
+    </script>
+</body>
+</html>
